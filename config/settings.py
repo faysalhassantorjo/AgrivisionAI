@@ -125,4 +125,7 @@ STATIC_URL = 'static/'
 # csrf trusted origins
 CSRF_TRUSTED_ORIGINS = [
     'http://69.62.77.17',
+    'http://nexcure.site',
+    'https://nexcure.site',
+
 ]
