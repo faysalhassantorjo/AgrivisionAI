@@ -124,6 +124,5 @@ STATIC_URL = 'static/'
 
 # csrf trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    '69.62.77.17:8000',
-    'http://'
+    'http://69.62.77.17',
 ]
