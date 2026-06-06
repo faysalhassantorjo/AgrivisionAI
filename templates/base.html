@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PlantMD{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --c-bg:        #f5f3ef;
+            --c-white:     #ffffff;
+            --c-green:     #1a5c3a;
+            --c-green-mid: #2e8b57;
+            --c-green-lt:  #e4f5ec;
+            --c-green-bd:  #b8dfc9;
+            --c-amber:     #c97c2e;
+            --c-amber-lt:  #fdf3e7;
+            --c-ink:       #18181b;
+            --c-ink-2:     #52525b;
+            --c-ink-3:     #a1a1aa;
+            --c-border:    #e4e0d8;
+            --c-surface:   #ffffff;
+            --radius-card: 18px;
+            --radius-btn:  10px;
+            --shadow-sm:   0 1px 4px rgba(0,0,0,.06);
+            --shadow-md:   0 4px 20px rgba(0,0,0,.08);
+            --shadow-lg:   0 12px 40px rgba(0,0,0,.11);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--c-bg);
+            color: var(--c-ink);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* ── TOP HEADER ── */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--c-white);
+            border-bottom: 1px solid var(--c-border);
+            height: 58px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        .site-logo {
+            font-family: 'Lora', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--c-green);
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+        .site-logo em {
+            font-style: italic;
+            color: var(--c-amber);
+        }
+        .logo-tag {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            background: var(--c-green-lt);
+            color: var(--c-green);
+            border-radius: 20px;
+            padding: 2px 9px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        /* ── TOOL NAV BAR (shown on tool pages) ── */
+        .tool-nav {
+            background: var(--c-white);
+            border-bottom: 1px solid var(--c-border);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tool-nav::-webkit-scrollbar { display: none; }
+        .tool-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 0 14px;
+            height: 46px;
+            border-radius: 0;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--c-ink-2);
+            text-decoration: none;
+            white-space: nowrap;
+            border-bottom: 2.5px solid transparent;
+            transition: color .18s, border-color .18s;
+        }
+        .tool-nav-item:hover {
+            color: var(--c-green);
+        }
+        .tool-nav-item.active {
+            color: var(--c-green);
+            border-bottom-color: var(--c-green);
+            font-weight: 600;
+        }
+        .tool-nav-item.disabled {
+            color: var(--c-ink-3);
+            cursor: default;
+            pointer-events: none;
+        }
+        .tool-nav-item .nav-icon {
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .soon-pip {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            background: #fef9c3;
+            color: #a16207;
+            border-radius: 20px;
+            padding: 1px 7px;
+        }
+        .tool-nav-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--c-border);
+            margin: 0 4px;
+            flex-shrink: 0;
+        }
+
+        /* ── MAIN CONTENT AREA ── */
+        .page-body {
+            width: 100%;
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 5rem;
+        }
+
+        /* ── CARDS ── */
+        .card-base {
+            background: var(--c-surface);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary-g {
+            background: var(--c-green);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-btn);
+            font-family: 'Sora', sans-serif;
+            font-weight: 500;
+            font-size: .9rem;
+            padding: .65rem 1.4rem;
+            transition: background .2s, transform .15s, box-shadow .2s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary-g:hover {
+            background: #144a2e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(26,92,58,.3);
+            color: #fff;
+        }
+        .btn-primary-g:disabled {
+            opacity: .7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-outline-g {
+            background: transparent;
+            color: var(--c-green);
+            border: 1.5px solid var(--c-green-bd);
+            border-radius: var(--radius-btn);
+            font-family: 'Sora', sans-serif;
+            font-weight: 500;
+            font-size: .85rem;
+            padding: .5rem 1.2rem;
+            transition: all .2s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline-g:hover {
+            background: var(--c-green-lt);
+            border-color: var(--c-green);
+            color: var(--c-green);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 99px; }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- Site Header -->
+<header class="site-header">
+    <a href="/" class="site-logo">Plant<em>MD</em></a>
+    <span class="logo-tag">Beta</span>
+</header>
+
+<!-- Tool Nav (included by tool pages via block) -->
+{% block tool_nav %}{% endblock %}
+
+<!-- Page content -->
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

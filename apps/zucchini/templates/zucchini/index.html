@@ -1,0 +1,571 @@
+{% extends 'base.html' %}
+{% block title %} zucchini Disease Detection — PlantMD{% endblock %}
+
+{% block tool_nav %}
+<nav class="tool-nav">
+    <!-- Back to home -->
+    <a href="/" class="tool-nav-item" style="padding-left:0; color:var(--c-ink-3); font-size:.8rem;">
+        <i class="bi bi-grid-3x3-gap nav-icon"></i>
+        <span>All Tools</span>
+    </a>
+
+    <div class="tool-nav-divider"></div>
+
+    <!-- Tea Leaf (active) -->
+    <a href="/tea-leaf/" class="tool-nav-item">
+        <span class="nav-icon">🍵</span>
+        <span>Tea Leaf Disease</span>
+    </a>
+
+    <!-- Crop Leaf (disabled) -->
+    <a href="/zucchini/" class="tool-nav-item active">
+        <span class="nav-icon">🌾</span>
+        <span>Zzucchini Disease</span>
+    </a>
+
+    <!-- Papaya (disabled) -->
+    <span class="tool-nav-item disabled">
+        <span class="nav-icon">🥭</span>
+        <span>Papaya Disease</span>
+        <span class="soon-pip">Soon</span>
+    </span>
+</nav>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── Two-column layout ── */
+    .tool-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.75rem;
+        align-items: start;
+    }
+    @media (max-width: 768px) {
+        .tool-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Page heading ── */
+    .tool-heading {
+        margin-bottom: 2rem;
+    }
+    .tool-heading h2 {
+        font-family: 'Lora', serif;
+        font-size: 1.65rem;
+        font-weight: 600;
+        letter-spacing: -.3px;
+        margin-bottom: .25rem;
+        color: var(--c-ink);
+    }
+    .tool-heading p {
+        color: var(--c-ink-2);
+        font-size: .875rem;
+        font-weight: 300;
+    }
+
+    /* ── Status pill ── */
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 99px;
+        padding: 4px 14px 4px 10px;
+        font-size: .78rem;
+        font-weight: 500;
+        color: #15803d;
+        margin-bottom: 1.75rem;
+    }
+    .status-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        flex-shrink: 0;
+        animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+        0%,100% { opacity:1; } 50% { opacity:.3; }
+    }
+
+    /* ── Upload card ── */
+    .upload-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-sm);
+        padding: 2rem;
+    }
+    .section-label {
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--c-ink-3);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+    .section-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--c-border);
+    }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+        border: 2px dashed var(--c-green-bd);
+        border-radius: 14px;
+        background: var(--c-green-lt);
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        min-height: 200px;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+        border-color: var(--c-green);
+        background: #d0eedd;
+    }
+    .dz-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        background: var(--c-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--c-green);
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-sm);
+    }
+    .dz-title {
+        font-weight: 600;
+        font-size: .95rem;
+        color: var(--c-ink);
+        margin-bottom: .3rem;
+    }
+    .dz-sub {
+        font-size: .8rem;
+        color: var(--c-ink-2);
+        margin-bottom: 1rem;
+        font-weight: 300;
+    }
+
+    /* ── Preview area ── */
+    .preview-wrap {
+        margin-top: 1.25rem;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--c-border);
+        display: none;
+        position: relative;
+    }
+    .preview-wrap img {
+        width: 100%;
+        max-height: 280px;
+        object-fit: cover;
+        display: block;
+    }
+    .preview-filename {
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        background: rgba(0,0,0,.45);
+        color: #fff;
+        font-size: .75rem;
+        padding: .4rem .85rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* ── Submit button ── */
+    .submit-btn {
+        width: 100%;
+        padding: .85rem;
+        font-size: .95rem;
+        justify-content: center;
+        margin-top: 1.25rem;
+        border-radius: 12px;
+    }
+
+    /* ── Result card ── */
+    .result-card {
+        background: var(--c-surface);
+        border: 1px solid var(--c-border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+    .result-header {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--c-border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .result-header-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        background: var(--c-green-lt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: var(--c-green);
+    }
+    .result-header h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    .result-body {
+        padding: 1.75rem 2rem;
+    }
+    .result-row {
+        margin-bottom: 1.5rem;
+    }
+    .result-row:last-child { margin-bottom: 0; }
+    .result-lbl {
+        font-size: .7rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--c-ink-3);
+        margin-bottom: .4rem;
+    }
+    .disease-name {
+        font-family: 'Lora', serif;
+        font-size: 1.55rem;
+        font-weight: 600;
+        color: var(--c-green);
+        letter-spacing: -.2px;
+        line-height: 1.2;
+    }
+    .conf-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: .5rem;
+    }
+    .conf-pct {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--c-ink);
+        line-height: 1;
+        min-width: 58px;
+    }
+    .conf-bar-bg {
+        flex: 1;
+        height: 8px;
+        background: var(--c-green-lt);
+        border-radius: 99px;
+        overflow: hidden;
+    }
+    .conf-bar {
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #52b788, #1a5c3a);
+        width: 0%;
+        transition: width 1.1s cubic-bezier(.4,0,.2,1);
+    }
+    .treatment-box {
+        background: #f8fffe;
+        border: 1px solid #b8dfc9;
+        border-radius: 12px;
+        padding: 1rem 1.2rem;
+        font-size: .875rem;
+        color: var(--c-ink-2);
+        line-height: 1.7;
+        display: flex;
+        gap: 10px;
+    }
+    .treatment-box-icon {
+        color: var(--c-green);
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    /* ── Empty state for result column ── */
+    .empty-state {
+        background: var(--c-surface);
+        border: 1px dashed var(--c-border);
+        border-radius: var(--radius-card);
+        padding: 3rem 2rem;
+        text-align: center;
+        color: var(--c-ink-3);
+    }
+    .empty-state-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        opacity: .5;
+    }
+    .empty-state p {
+        font-size: .875rem;
+        font-weight: 300;
+        max-width: 220px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* animation */
+    .upload-card, .result-card, .empty-state {
+        animation: fadeUp .35s ease both;
+    }
+    @keyframes fadeUp {
+        from { opacity:0; transform:translateY(12px); }
+        to   { opacity:1; transform:translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-body">
+
+    <!-- Heading -->
+    <div class="tool-heading">
+        <div class="status-pill">
+            <span class="status-dot"></span>
+            Model: <strong>{{ model_load_status }}</strong>
+        </div>
+        <h2>Tea Leaf Disease Detection</h2>
+        <p>Upload a clear photo of the affected tea leaf for instant AI-powered diagnosis and treatment advice.</p>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="tool-layout">
+
+        <!-- LEFT: Upload -->
+        <div class="upload-card">
+            <div class="section-label">Upload Image</div>
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+
+                <label for="imageInput" class="drop-zone" id="dropZone">
+                    <div class="dz-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <div class="dz-title">Drop your image here</div>
+                    <div class="dz-sub">JPG or PNG, any resolution</div>
+                    <span class="btn-outline-g">
+                        <i class="bi bi-folder2-open"></i> Browse File
+                    </span>
+                    <input type="file" name="image" id="imageInput" accept="image/*" hidden>
+                </label>
+
+                <!-- Preview -->
+                <div class="preview-wrap" id="previewWrap">
+                    <img id="previewImg" alt="Preview">
+                    <div class="preview-filename">
+                        <i class="bi bi-file-image"></i>
+                        <span id="previewName"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-g submit-btn" id="submitBtn">
+                    <i class="bi bi-search"></i> Analyse Disease
+                </button>
+            </form>
+        </div>
+
+        <!-- RIGHT: Result -->
+        <div>
+            {% if result %}
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="result-header-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+                    <div>
+                        <h3>Prediction Result</h3>
+                        <span style="font-size:.78rem; color:var(--c-ink-3); font-weight:300;">Analysis complete</span>
+                    </div>
+                </div>
+                <div class="result-body">
+
+                    <!-- Disease -->
+                    <div class="result-row">
+                        <div class="result-lbl">Detected Disease</div>
+                        <div class="disease-name">{{ result.class }}</div>
+                    </div>
+
+                    <!-- Confidence -->
+                    <div class="result-row">
+                        <div class="result-lbl">Confidence Score</div>
+                        <div class="conf-row">
+                            <div class="conf-pct">{{ result.confidence }}<span style="font-size:1rem; font-weight:400; color:var(--c-ink-2);">%</span></div>
+                            <div class="conf-bar-bg">
+                                <div class="conf-bar" id="confBar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Treatment -->
+                    {% if result.treatment %}
+                    <div class="result-row">
+                        <div class="result-lbl">Recommended Treatment</div>
+                        <div class="treatment-box">
+                            <i class="bi bi-capsule treatment-box-icon"></i>
+                            <span>{{ result.treatment }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🔬</div>
+                <p>Upload a leaf image and run analysis — your results will appear here.</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <p style="margin-top:2rem; font-size:.78rem; color:var(--c-ink-3); text-align:center;">
+        <i class="bi bi-shield-check me-1"></i> Images are processed locally and not stored after analysis.
+    </p>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const imageInput = document.getElementById("imageInput");
+    const previewImg  = document.getElementById("previewImg");
+    const previewWrap = document.getElementById("previewWrap");
+    const previewName = document.getElementById("previewName");
+    const dropZone    = document.getElementById("dropZone");
+    const submitBtn   = document.getElementById("submitBtn");
+    const resultCol   = document.querySelector(".tool-layout > div:last-child");
+
+    function loadFile(file) {
+        if (!file || !file.type.startsWith("image/")) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            previewImg.src = e.target.result;
+            previewWrap.style.display = "block";
+            previewName.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    imageInput.addEventListener("change", () => loadFile(imageInput.files[0]));
+
+    dropZone.addEventListener("dragover",  e => { e.preventDefault(); dropZone.classList.add("drag-over"); });
+    dropZone.addEventListener("dragleave", ()  => dropZone.classList.remove("drag-over"));
+    dropZone.addEventListener("drop", e => {
+        e.preventDefault();
+        dropZone.classList.remove("drag-over");
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            const dt = new DataTransfer(); dt.items.add(file);
+            imageInput.files = dt.files;
+            loadFile(file);
+        }
+    });
+
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+        e.preventDefault();  // stop normal page reload
+
+        const file = imageInput.files[0];
+        if (!file) {
+            alert("Please select an image first.");
+            return;
+        }
+
+        // Loading state
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analysing…';
+        submitBtn.disabled = true;
+        resultCol.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <p>Analysing your image, please wait…</p>
+            </div>`;
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/zucchini/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+                },
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+            const data = await response.json();
+
+            if (data.success && data.result) {
+                renderResult(data.result);
+            } else {
+                throw new Error("Unexpected response from server.");
+            }
+
+        } catch (err) {
+            resultCol.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">❌</div>
+                    <p>Something went wrong: ${err.message}</p>
+                </div>`;
+        } finally {
+            submitBtn.innerHTML = '<i class="bi bi-search"></i> Analyse Disease';
+            submitBtn.disabled = false;
+        }
+    });
+
+    function renderResult(result) {
+        const treatmentHTML = result.treatment ? `
+            <div class="result-row">
+                <div class="result-lbl">Recommended Treatment</div>
+                <div class="treatment-box">
+                    <i class="bi bi-capsule treatment-box-icon"></i>
+                    <span>${result.treatment}</span>
+                </div>
+            </div>` : "";
+
+        resultCol.innerHTML = `
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="result-header-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+                    <div>
+                        <h3>Prediction Result</h3>
+                        <span style="font-size:.78rem; color:var(--c-ink-3); font-weight:300;">Analysis complete</span>
+                    </div>
+                </div>
+                <div class="result-body">
+                    <div class="result-row">
+                        <div class="result-lbl">Detected Disease</div>
+                        <div class="disease-name">${result.class}</div>
+                    </div>
+                    <div class="result-row">
+                        <div class="result-lbl">Confidence Score</div>
+                        <div class="conf-row">
+                            <div class="conf-pct">${result.confidence}<span style="font-size:1rem; font-weight:400; color:var(--c-ink-2);">%</span></div>
+                            <div class="conf-bar-bg">
+                                <div class="conf-bar" id="confBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    ${treatmentHTML}
+                </div>
+            </div>`;
+
+        // Animate confidence bar after DOM insert
+        setTimeout(() => {
+            const bar = document.getElementById("confBar");
+            if (bar) bar.style.width = result.confidence + "%";
+        }, 100);
+
+        resultCol.querySelector(".result-card").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+</script>
+{% endblock %}
