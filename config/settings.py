@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tu*3*%4y9k(gc8=^ck66)4v-_rzk@qw)5xq%3_-%@%=&dry2l+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['69.62.77.17:8000', "*"]
 
 
 # Application definition
@@ -120,3 +120,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
+# csrf trusted origins
+CSRF_TRUSTED_ORIGINS = [
+    '69.62.77.17:8000',
+    'http://'
+]
