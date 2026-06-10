@@ -7,10 +7,21 @@ from .model import load_model
 
 
 
-CLASSES = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
-
+CLASSES =[
+'Yellow Mosaic Virus',
+'1',
+'Angular Leaf Spot',
+'Anthracnose',
+'4',
+'5' ,
+'Healthy',
+'7',
+'Downy Midew',
+]
 
 from tensorflow.keras.applications.resnet50 import preprocess_input
+
+MODEL = load_model()
 
 def preprocess(image_file):
     img = Image.open(image_file).convert("RGB")
@@ -23,9 +34,14 @@ def preprocess(image_file):
 def predict(image_file):
 
     img = preprocess(image_file)
-    MODEL = load_model()
+    
+    if MODEL is None:
+        return {
+            "error": "Model could not be loaded."
+        }
 
     preds = MODEL.predict(img)
+    
     
     print('Raw preds: ', preds)
     print('Preds sum: ', np.sum(preds))  

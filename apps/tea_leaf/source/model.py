@@ -1,8 +1,12 @@
+
+# model.py
 import tensorflow as tf
+import os
 
 def load_model():
-    
-    MODEL = tf.keras.models.load_model("apps/tea_leaf/source/tea_leaf_model.h5", compile=False)  
-    
-    print(MODEL.summary())
-    return MODEL
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    MODEL_PATH = os.path.join(BASE_DIR, "Tea leaf.h5")
+    if not os.path.exists(MODEL_PATH):
+        print(f"Model not found at: {MODEL_PATH}")
+        return None
+    return tf.keras.models.load_model(MODEL_PATH, compile=False)

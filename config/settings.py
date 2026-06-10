@@ -38,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    # 'apps.tea_leaf',
-    # 'apps.zucchini',
+    'apps.tea_leaf',
+    'apps.zucchini',
     # 'apps.papaya',
-     'apps.hibiscus',
+    'apps.hibiscus',
 ]
 
 MIDDLEWARE = [

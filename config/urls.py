@@ -24,8 +24,8 @@ def home(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('tea-leaf/', include('apps.tea_leaf.urls')),
-    # path('zucchini/', include('apps.zucchini.urls')),
+    path('tea-leaf/', include('apps.tea_leaf.urls')),
+    path('zucchini/', include('apps.zucchini.urls')),
     # path('papaya/', include('apps.papaya.urls')),
     path('hibiscus/', include('apps.hibiscus.urls')),
     

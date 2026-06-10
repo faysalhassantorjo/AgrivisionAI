@@ -8,16 +8,20 @@ from .model import load_model
 
 
 CLASSES =[
-'0',
+'0' ,
 '1',
-'2','3',
-'4','5' ,'6',
-'7'
+'2',
+'3',
+'4',
+'5' ,
+'6',
+'7',
 ]
 
 from tensorflow.keras.applications.resnet50 import preprocess_input
 
 MODEL = None
+
 def preprocess(image_file):
     img = Image.open(image_file).convert("RGB")
     img = img.resize((224, 224))
