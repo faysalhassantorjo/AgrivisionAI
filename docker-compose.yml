@@ -1,3 +1,4 @@
+
 services:
   nginx:
     image: nginx:latest
@@ -8,6 +9,8 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./staticfiles:/app/staticfiles
       - media:/app/media
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
     depends_on:
       web:
         condition: service_healthy
@@ -30,6 +33,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
 
 networks:
   edge:
