@@ -32,6 +32,9 @@ RUN pip install --no-cache-dir --timeout=1000 -r requirements.txt
 # ---- Copy project after dependencies ----
 COPY . .
 
+# ---- Collect static files ----
+RUN python manage.py collectstatic --noinput
+
 # ---- Expose Django port ----
 EXPOSE 8000
 
