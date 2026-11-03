@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% block title %}AgriVision AI 2.0 — Crop Pathology & Agricultural Advisory Studio{% endblock %}
+
+{% block extra_head %}
+<style>
+    .home-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2.25rem 1.5rem 3.5rem;
+    }
+
+    /* ── HERO ── */
+    .hero-banner {
+        text-align: center;
+        padding: 2.5rem 1rem 2.25rem;
+    }
+    .hero-pill-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        padding: 5px 14px;
+        border-radius: 99px;
+        font-size: .78rem;
+        font-weight: 600;
+        color: var(--c-brand);
+        box-shadow: var(--shadow-subtle);
+        margin-bottom: 1.25rem;
+    }
+    .hero-pill-badge span {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--c-accent);
+        display: inline-block;
+    }
+    .hero-h1 {
+        font-family: var(--font-serif);
+        font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+        font-weight: 600;
+        letter-spacing: -.5px;
+        color: var(--c-ink);
+        line-height: 1.2;
+        margin-bottom: .85rem;
+    }
+    .hero-h1 em {
+        font-style: italic;
+        color: var(--c-brand);
+    }
+    .hero-subtext {
+        font-size: 1.05rem;
+        color: var(--c-ink-muted);
+        max-width: 620px;
+        margin: 0 auto 2rem;
+        line-height: 1.7;
+        font-weight: 300;
+    }
+
+    /* ── METRIC TELEMETRY BAR ── */
+    .stats-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+    @media (max-width: 768px) {
+        .stats-strip {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    .stat-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-card);
+        padding: 1.15rem 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow-subtle);
+    }
+    .stat-number {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--c-brand);
+        line-height: 1.1;
+        margin-bottom: 2px;
+        font-feature-settings: "tnum";
+    }
+    .stat-label {
+        font-size: .76rem;
+        font-weight: 600;
+        color: var(--c-ink-subtle);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+    /* ── CROP TOOLS GRID ── */
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+    .tool-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-window);
+        padding: 1.75rem 1.5rem;
+        text-decoration: none;
+        color: var(--c-ink);
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--shadow-subtle);
+        transition: all .25s cubic-bezier(.4, 0, .2, 1);
+        position: relative;
+    }
+    .tool-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-pop);
+        border-color: var(--c-brand-border);
+        color: var(--c-ink);
+    }
+    .tool-card-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .tool-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: .5rem;
+    }
+    .tool-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--c-ink);
+    }
+    .badge-live {
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        background: var(--status-healthy-bg);
+        color: var(--status-healthy-text);
+        border: 1px solid var(--status-healthy-border);
+        border-radius: 99px;
+        padding: 3px 9px;
+    }
+    .badge-beta {
+        font-size: 0.64rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        background: var(--status-warning-bg);
+        color: var(--status-warning-text);
+        border: 1px solid var(--status-warning-border);
+        border-radius: 99px;
+        padding: 3px 9px;
+    }
+    .tool-desc {
+        color: var(--c-ink-muted);
+        font-size: .86rem;
+        line-height: 1.6;
+        flex: 1;
+        margin-bottom: 1.4rem;
+        font-weight: 300;
+    }
+    .tool-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        font-size: .78rem;
+        color: var(--c-ink-subtle);
+    }
+    .tool-footer i {
+        color: var(--c-brand);
+        font-size: .95rem;
+        transition: transform .2s;
+    }
+    .tool-card:hover .tool-footer i {
+        transform: translateX(4px);
+    }
+
+    /* Info notice */
+    .notice-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-card);
+        padding: 1.15rem 1.4rem;
+        font-size: .84rem;
+        color: var(--c-ink-muted);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="home-wrapper">
+
+    <!-- Hero -->
+    <div class="hero-banner">
+        <div class="hero-pill-badge">
+            <span></span> Deep Learning Agricultural Pathology Studio
+        </div>
+        <h1 class="hero-h1">Real-time Crop Disease Diagnosis<br><em>Powered by Computer Vision</em></h1>
+        <p class="hero-subtext">Upload leaf imagery into our single-window diagnosis studio for instant automated condition identification, confidence metrics, and targeted agronomic treatments.</p>
+    </div>
+
+    <!-- Telemetry Stats -->
+    <div class="stats-strip">
+        <div class="stat-card">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Neural Models</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">33</div>
+            <div class="stat-label">Disease Pathologies</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">&lt; 85ms</div>
+            <div class="stat-label">Inference Latency</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Client Privacy</div>
+        </div>
+    </div>
+
+    <!-- Crop Tool Grid -->
+    <div class="tools-grid">
+
+        <!-- Hibiscus -->
+        <a href="/hibiscus/" class="tool-card">
+            <div class="tool-card-icon" style="background:#fce7f3; color:#be185d;">🌺</div>
+            <div class="tool-card-header">
+                <span class="tool-name">Hibiscus Leaf Disease</span>
+                <span class="badge-live">Live</span>
+            </div>
+            <p class="tool-desc">
+                8 distinct classes including Mild Edge Damage, Citrus Spot, Early Spotting, Fungal Infection, Senescent, and Wrinkled foliage.
+            </p>
+            <div class="tool-footer">
+                <span>ResNet-50 · 8 Classes</span>
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+
+        <!-- Zucchini -->
+        <a href="/zucchini/" class="tool-card">
+            <div class="tool-card-icon" style="background:#e8f5ed; color:#0f5132;">🍃</div>
+            <div class="tool-card-header">
+                <span class="tool-name">Zucchini Leaf Disease</span>
+                <span class="badge-live">Live</span>
+            </div>
+            <p class="tool-desc">
+                9 cucurbit pathologies including Yellow Mosaic Virus, Angular Leaf Spot, Anthracnose, Powdery Mildew, and Downy Mildew.
+            </p>
+            <div class="tool-footer">
+                <span>ResNet-50 · 9 Classes</span>
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+
+        <!-- Tea Leaf -->
+        <a href="/tea-leaf/" class="tool-card">
+            <div class="tool-card-icon" style="background:#dcfce7; color:#15803d;">🍵</div>
+            <div class="tool-card-header">
+                <span class="tool-name">Tea Leaf Disease</span>
+                <span class="badge-live">Live</span>
+            </div>
+            <p class="tool-desc">
+                Covers 8 critical tea pathologies including Algal Leaf Spot, Anthracnose, Bird's Eye Spot, Brown Blight, and Gray Blight.
+            </p>
+            <div class="tool-footer">
+                <span>ResNet / DenseNet · 8 Classes</span>
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+
+        <!-- Papaya -->
+        <a href="/papaya/" class="tool-card">
+            <div class="tool-card-icon" style="background:#fef3c7; color:#b45309;">🍈</div>
+            <div class="tool-card-header">
+                <span class="tool-name">Papaya Leaf Disease</span>
+                <span class="badge-beta">Beta</span>
+            </div>
+            <p class="tool-desc">
+                Diagnostic model for Papaya Ringspot Virus, Anthracnose, Leaf Curl, Black Spot, and Powdery Mildew in Carica papaya.
+            </p>
+            <div class="tool-footer">
+                <span>MobileNet / ResNet · 8 Classes</span>
+                <i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Agronomic Notice -->
+    <div class="notice-card">
+        <i class="bi bi-info-circle-fill" style="color:var(--c-brand); font-size:1.35rem; flex-shrink:0;"></i>
+        <span>AgriVision AI neural networks are trained on curated agricultural research datasets. Diagnostic predictions assist crop monitoring; always confirm treatment plans with a certified local agronomist.</span>
+    </div>
+
+</div>
+{% endblock %}

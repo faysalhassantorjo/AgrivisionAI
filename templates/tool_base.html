@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% block tool_title %}{{ plant_name }} Leaf Diagnosis Studio — AgriVision AI{% endblock %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/tool.css' %}">
+{% block tool_extra_head %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="studio-window">
+
+    <!-- ── LEFT CONSOLE: INPUT & CROP TELEMETRY ── -->
+    <aside class="studio-pane upload-pane">
+        
+        <!-- Pane Header -->
+        <div class="pane-header">
+            <div class="pane-header-title">
+                <div class="pane-icon">
+                    {% block dropzone_icon %}{{ plant_icon|default:"🌿" }}{% endblock %}
+                </div>
+                <div>
+                    <h1 class="pane-heading mb-0">{% block hero_heading %}{{ plant_name }} Pathology Scanner{% endblock %}</h1>
+                    <span class="pane-subheading">{{ scientific_name|default:"Agricultural Pathology Model" }} · {{ model_load_status }}</span>
+                </div>
+            </div>
+            <span class="brand-badge">AI 2.0</span>
+        </div>
+
+        <!-- Pane Body -->
+        <div class="pane-body">
+            
+            <!-- Client Error Alert -->
+            <div class="alert-error" id="clientError" style="display:none;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span id="clientErrorMsg"></span>
+            </div>
+
+            <!-- Server Error Alert -->
+            {% if error %}
+            <div class="alert-error" id="serverError">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+
+                <!-- Dropzone -->
+                <label for="imageInput" class="drop-zone" id="dropZone">
+                    <div class="dz-icon-wrap">
+                        {% block dropzone_icon_lg %}{{ plant_icon|default:"🍃" }}{% endblock %}
+                    </div>
+                    <div class="dz-title">Drop leaf image here</div>
+                    <div class="dz-sub">Supports JPG, PNG, WebP · Max 10MB</div>
+                    <span class="btn-browse">
+                        <i class="bi bi-folder2-open"></i> Browse Specimen
+                    </span>
+                    <input type="file" name="image" id="imageInput" accept="image/jpeg,image/png,image/webp" hidden>
+                </label>
+
+                <!-- Selected Specimen Preview -->
+                <div class="preview-wrap" id="previewWrap">
+                    <img id="previewImg" alt="Selected leaf preview">
+                    <div class="preview-meta-bar">
+                        <div class="d-flex align-items-center gap-2 overflow-hidden">
+                            <i class="bi bi-image text-success"></i>
+                            <span id="previewName" style="white-space:nowrap; text-overflow:ellipsis; overflow:hidden;"></span>
+                        </div>
+                        <button type="button" class="btn-clear-file" id="btnClearPreview">
+                            <i class="bi bi-x-circle me-1"></i> Replace
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <i class="bi bi-cpu-fill"></i> Run Neural Diagnosis
+                </button>
+            </form>
+
+            <!-- Photography Quality Tips -->
+            <div class="tips-row">
+                <div class="tip-item">
+                    <i class="bi bi-brightness-high"></i>
+                    <strong>Even Light</strong>
+                </div>
+                <div class="tip-item">
+                    <i class="bi bi-bullseye"></i>
+                    <strong>Center Spot</strong>
+                </div>
+                <div class="tip-item">
+                    <i class="bi bi-camera"></i>
+                    <strong>Sharp Focus</strong>
+                </div>
+            </div>
+
+            <!-- Detectable Diseases List -->
+            {% if supported_classes %}
+            <div class="classes-section">
+                <div class="classes-header">
+                    <i class="bi bi-shield-check text-success"></i>
+                    <span>Detectable Pathologies ({{ supported_classes|length }} Classes)</span>
+                </div>
+                <div class="classes-chips">
+                    {% for idx, item in supported_classes.items %}
+                    <span class="disease-chip">
+                        {% if item.name %}{{ item.name }}{% else %}{{ item }}{% endif %}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </aside>
+
+    <!-- ── RIGHT CONSOLE: DIAGNOSTIC MONITOR & REPORT ── -->
+    <main class="studio-pane monitor-pane" id="monitorPane">
+
+        <!-- 1. IDLE STATE: Waiting for Specimen -->
+        <div class="idle-hud" id="emptyState" style="{% if result %}display:none;{% endif %}">
+            <div class="reticle-icon-box">
+                🔬
+            </div>
+            <h2 class="idle-title">Awaiting Leaf Specimen</h2>
+            <p class="idle-sub">Select or drag an affected crop leaf into the upload panel. Real-time computer vision will extract cellular pathology patterns and output a treatment prescription.</p>
+            <div class="idle-badge-steps">
+                <span>Upload Leaf</span>
+                <span class="step-dot"></span>
+                <span>Neural Inference</span>
+                <span class="step-dot"></span>
+                <span>Pathology Report</span>
+            </div>
+        </div>
+
+        <!-- 2. SCANNING LOADER: During Ajax Processing -->
+        <div class="radar-loading" id="loadingState" style="display:none;">
+            <div class="radar-scanner-box">
+                <div class="radar-scan-beam"></div>
+                <span class="radar-inner-icon">🍃</span>
+            </div>
+            <h3 class="loader-heading">Executing Neural Inference...</h3>
+            <p class="loader-sub">Extracting feature vectors, matching fungal/viral pathology profiles, and computing softmax probability distributions.</p>
+            <div class="scanner-progress-track">
+                <div class="scanner-progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- 3. DIAGNOSIS REPORT: Result Display -->
+        <div class="diagnosis-report" id="resultCard" style="{% if not result %}display:none;{% endif %}">
+            
+            <!-- Dark Top Diagnostic Banner -->
+            <div class="report-banner">
+                <div class="banner-eyebrow">
+                    <span class="live-pulse-dot"></span>
+                    AI Pathology Diagnostic Report
+                </div>
+                <div class="banner-title-row">
+                    <div class="disease-title" id="resultDiseaseName">{{ result.class }}</div>
+                    <span class="badge-status {% if result.status == 'Healthy' %}healthy{% elif result.status == 'Aging' %}aging{% else %}diseased{% endif %}" id="resultStatusTag">
+                        {{ result.status|default:'Analyzed' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Scrollable Report Body -->
+            <div class="report-scroll-body">
+                
+                <!-- Split Row: Analyzed Image + Metric Summary -->
+                <div class="specimen-metrics-grid">
+                    
+                    <!-- Left: Analyzed Specimen Image Frame -->
+                    <div class="specimen-box" id="resultImageBox">
+                        <img id="resultLeafImg" class="specimen-img" src="{% if result and result.image_url %}{{ result.image_url }}{% elif uploaded_image_url %}{{ uploaded_image_url }}{% endif %}" alt="Analyzed Leaf Specimen">
+                        <div class="specimen-tag">
+                            <i class="bi bi-patch-check-fill text-success me-1"></i> Analyzed Specimen
+                        </div>
+                    </div>
+
+                    <!-- Right: Metrics & Pathology Overview -->
+                    <div class="metric-summary-card">
+                        <div>
+                            <div class="metric-gauge-head">
+                                <span class="metric-name">Confidence Level</span>
+                                <span class="metric-conf-grade" id="resultConfLevelText">{{ result.confidence_level|default:'High Confidence' }}</span>
+                            </div>
+                            <div class="metric-score-row">
+                                <span class="big-score" id="resultConfPct">{{ result.confidence }}</span>
+                                <span class="score-unit">%</span>
+                            </div>
+                            <div class="conf-bar-track">
+                                <div class="conf-bar-fill" id="confBar" data-width="{{ result.confidence }}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pathology Overview Description -->
+                        <div id="resultOverviewSection" style="{% if not result.description %}display:none;{% endif %}">
+                            <p class="pathology-desc" id="resultOverviewText">{{ result.description }}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Agronomic Prescription / Treatment Box -->
+                <div class="prescription-card" id="resultTreatmentSection" style="{% if not result.treatment %}display:none;{% endif %}">
+                    <div class="prescription-icon">
+                        <i class="bi bi-prescription2"></i>
+                    </div>
+                    <div>
+                        <div class="prescription-title">Agronomic Recommendation & Prescription</div>
+                        <div class="prescription-text" id="resultTreatmentText">{{ result.treatment }}</div>
+                    </div>
+                </div>
+
+                <!-- Top Probability Distribution Breakdown -->
+                <div class="alt-probabilities-card" id="resultBreakdownSection" style="{% if not result.top_scores %}display:none;{% endif %}">
+                    <div class="alt-prob-title">Alternative Pathology Probabilities</div>
+                    <div id="resultProbBars">
+                        {% if result.top_scores %}
+                        {% for item in result.top_scores %}
+                        <div class="alt-prob-row">
+                            <div class="alt-prob-labels">
+                                <span>{{ item.class }}</span>
+                                <span>{{ item.score }}%</span>
+                            </div>
+                            <div class="alt-prob-track">
+                                <div class="alt-prob-fill" style="width: {{ item.score }}%;"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Report Action Footer -->
+            <div class="report-footer-actions">
+                <button type="button" class="btn-reset-report" id="btnResetDiagnosis">
+                    <i class="bi bi-arrow-repeat"></i> Diagnose Another Specimen
+                </button>
+                <button type="button" class="btn-print-report" onclick="window.print();">
+                    <i class="bi bi-printer"></i> Print Report
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/upload.js' %}"></script>
+{% block tool_extra_scripts %}{% endblock %}
+{% endblock %}

@@ -1,0 +1,25 @@
+# Virtual Environments
+venv/
+vvenv/
+env/
+.env
+.env.local
+
+# Databases
+*.sqlite3
+db.sqlite3
+
+# Python & Django Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+logs/
+staticfiles/
+
+# Development / Local overrides
+nginx/dev.conf
+docker-compose.dev.yml
+.pytest_cache/
+.coverage
+htmlcov/

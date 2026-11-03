@@ -1,0 +1,190 @@
+# Disease Classes and Treatment Advice Configuration
+
+hibiscus:
+  name: "Hibiscus"
+  scientific_name: "Hibiscus rosa-sinensis"
+  icon: "🌺"
+  classes:
+    0:
+      name: "Citrus Spot"
+      status: "Diseased"
+      description: "Circular chlorotic lesions with brown centers caused by citrus/hibiscus spot fungal pathogens."
+      treatment: "Apply a copper-based fungicide spray and avoid overhead irrigation to reduce foliage moisture."
+    1:
+      name: "Early Mild Spotting"
+      status: "Diseased"
+      description: "Initial stage fungal or bacterial spotting characterized by small pinhead dots on the lamina."
+      treatment: "Isolate affected plants, sanitize tools, and treat preventively with organic neem oil or broad-spectrum fungicide."
+    2:
+      name: "Fungal Infected"
+      status: "Diseased"
+      description: "Widespread fungal mycelial colonies or dark sporulating patches across leaf tissue."
+      treatment: "Remove heavily infected leaves immediately. Apply Mancozeb or Chlorothalonil fungicide at recommended dosages."
+    3:
+      name: "Healthy"
+      status: "Healthy"
+      description: "Vibrant green, structurally intact leaf tissue with no observable pathological lesions."
+      treatment: "No treatment required. Maintain current watering and fertilizing regimen."
+    4:
+      name: "Mild Edge Damage"
+      status: "Diseased"
+      description: "Localized necrosis or physical/environmental stress along the outer margins of the leaf."
+      treatment: "Prune affected leaves, avoid direct harsh wind or low humidity, and inspect for pest feeding."
+    5:
+      name: "Senescent"
+      status: "Aging"
+      description: "Natural yellowing and leaf aging process typically affecting older lower leaves."
+      treatment: "Gently remove dying leaves to encourage new shoot development. Ensure balanced potassium and nitrogen fertilization."
+    6:
+      name: "Slightly Diseased"
+      status: "Diseased"
+      description: "Mild chlorosis or early onset systemic stress showing faint mottling across leaf surface."
+      treatment: "Monitor closely for 3-5 days. Ensure soil has proper drainage and apply mild foliar micronutrient spray."
+    7:
+      name: "Wrinkled Leaf"
+      status: "Physiological / Viral"
+      description: "Leaf puckering, curling, or distortion commonly associated with aphid infestation or begomovirus."
+      treatment: "Inspect leaf undersides for sap-sucking pests. Spray insecticidal soap or imidacloprid if aphids or whiteflies are detected."
+
+zucchini:
+  name: "Zucchini"
+  scientific_name: "Cucurbita pepo"
+  icon: "🍃"
+  classes:
+    0:
+      name: "Yellow Mosaic Virus"
+      status: "Diseased"
+      description: "Severe bright yellow mosaic patterns, leaf blistering, and stunting caused by aphid-transmitted ZYMV."
+      treatment: "No chemical cure exists for viral infections. Remove and destroy infected plants promptly; control aphid vectors using insecticidal soap."
+    1:
+      name: "Powdery Mildew"
+      status: "Diseased"
+      description: "White talcum powder-like fungal growth appearing across upper and lower leaf surfaces."
+      treatment: "Apply potassium bicarbonate, sulfur sprays, or systemic fungicides (e.g., myclobutanil). Improve air circulation."
+    2:
+      name: "Angular Leaf Spot"
+      status: "Diseased"
+      description: "Water-soaked, angular lesions delimited by leaf veins, caused by Pseudomonas syringae pv. lachrymans."
+      treatment: "Apply copper hydroxide bactericide. Avoid working in the field when foliage is wet to prevent bacterial spread."
+    3:
+      name: "Anthracnose"
+      status: "Diseased"
+      description: "Sunken circular brownish-black spots with concentric rings caused by Colletotrichum orbiculare."
+      treatment: "Apply protectant fungicides (Chlorothalonil or Azoxystrobin). Practice 2-3 year crop rotation with non-cucurbits."
+    4:
+      name: "Alternaria Leaf Blight"
+      status: "Diseased"
+      description: "Small brown circular spots expanding into target-like lesions with concentric rings."
+      treatment: "Apply preventive fungicide spray at first sign of disease. Water at soil level using drip irrigation."
+    5:
+      name: "Gummy Stem Blight"
+      status: "Diseased"
+      description: "Circular dark brown lesions with pycnidia, often beginning at leaf margins."
+      treatment: "Apply registered triazole or strobilurin fungicides. Ensure proper plant spacing for foliage drying."
+    6:
+      name: "Healthy"
+      status: "Healthy"
+      description: "Healthy deep green foliage free of chlorosis, necrosis, or pathogen colonization."
+      treatment: "No treatment needed. Maintain optimal soil moisture and balanced cucurbit fertilization."
+    7:
+      name: "Scab"
+      status: "Diseased"
+      description: "Water-soaked lesions that turn brown with olive-green velvety sporulation."
+      treatment: "Use resistant cultivars when available. Apply protective fungicides during humid conditions."
+    8:
+      name: "Downy Mildew"
+      status: "Diseased"
+      description: "Angular yellow chlorotic lesions on upper leaf surface with purplish downy mold beneath."
+      treatment: "Apply targeted oomycete fungicides such as metalaxyl, fluopicolide, or cyazofamid promptly."
+
+tea_leaf:
+  name: "Tea Leaf"
+  scientific_name: "Camellia sinensis"
+  icon: "🍵"
+  classes:
+    0:
+      name: "Algal Leaf Spot"
+      status: "Diseased"
+      description: "Velvety orange-brown circular spots caused by Cephaleuros virescens parasitic green algae."
+      treatment: "Prune dense canopies to increase sunlight and air circulation. Apply copper oxychloride spray."
+    1:
+      name: "Anthracnose"
+      status: "Diseased"
+      description: "Irregular reddish-brown lesions with clear borders caused by Colletotrichum theae-sinensis."
+      treatment: "Apply copper fungicide or carbendazim. Remove fallen leaves from the bush base."
+    2:
+      name: "Bird's Eye Spot"
+      status: "Diseased"
+      description: "Small circular spots with grey centers and dark reddish margins resembling a bird's eye."
+      treatment: "Spray protective dithiocarbamate fungicide and ensure adequate potassium nutrition."
+    3:
+      name: "Brown Blight"
+      status: "Diseased"
+      description: "Large yellowish-brown patches starting from leaf tips and margins (Glomerella cingulata)."
+      treatment: "Prune affected shoots. Spray systemic fungicide (Hexaconazole or Propiconazole) during flush cycles."
+    4:
+      name: "Gray Blight"
+      status: "Diseased"
+      description: "Ash-gray concentric patches on mature leaves caused by Pestalotiopsis theae."
+      treatment: "Improve bush hygiene, avoid mechanical wounding during plucking, and spray copper fungicides."
+    5:
+      name: "Healthy"
+      status: "Healthy"
+      description: "Flawless tea flush or mature foliage with uniform coloration and structure."
+      treatment: "No treatment required. Continue standard plucking rounds and balanced fertilizer application."
+    6:
+      name: "Red Leaf Spot"
+      status: "Diseased"
+      description: "Distinct reddish-brown circular spots that coalesce and cause premature leaf defoliation."
+      treatment: "Apply Mancozeb or systemic triazole fungicides. Avoid excessive shade in tea garden."
+    7:
+      name: "White Spot"
+      status: "Diseased"
+      description: "Small bleach-white necrotic spots surrounded by a dark brown narrow ring."
+      treatment: "Spray wettable sulfur or copper fungicides. Maintain balanced soil pH."
+
+papaya:
+  name: "Papaya"
+  scientific_name: "Carica papaya"
+  icon: "🍈"
+  classes:
+    0:
+      name: "Anthracnose"
+      status: "Diseased"
+      description: "Water-soaked round lesions enlarging into brown sunken spots with pink spore masses."
+      treatment: "Apply copper hydroxide or azoxystrobin regularly during wet weather."
+    1:
+      name: "Black Spot"
+      status: "Diseased"
+      description: "Tiny black raised spots on leaf undersides caused by Asperisporium caricae."
+      treatment: "Remove older severely spotted leaves and apply Mancozeb or Chlorothalonil sprays."
+    2:
+      name: "Healthy"
+      status: "Healthy"
+      description: "Vigorous palmate leaves free of viral mottling, fungal spotting, or insect chlorosis."
+      treatment: "No treatment required. Maintain proper irrigation and organic mulching."
+    3:
+      name: "Leaf Curl"
+      status: "Diseased"
+      description: "Severe downward curling, crinkling, and vein thickening caused by Papaya leaf curl virus."
+      treatment: "Control whitefly vectors using sticky traps and insecticidal sprays; remove symptomatic plants."
+    4:
+      name: "Powdery Mildew"
+      status: "Diseased"
+      description: "White powdery patches on leaf undersides causing yellow chlorotic spots on upper side."
+      treatment: "Spray sulfur dust or potassium bicarbonate when humidity is high."
+    5:
+      name: "Phytophthora Blight"
+      status: "Diseased"
+      description: "Rapid water-soaked collapse of leaf petioles and lamina caused by Phytophthora nicotianae."
+      treatment: "Ensure excellent soil drainage. Apply phosphonate or metalaxyl fungicide drench."
+    6:
+      name: "Ringspot Virus"
+      status: "Diseased"
+      description: "Pronounced yellow mosaic, dark green vein-banding, and ring-shaped chlorotic marks."
+      treatment: "Eradicate infected trees immediately to prevent orchard-wide transmission by aphids."
+    7:
+      name: "Yellow Leaf Curl"
+      status: "Diseased"
+      description: "Stunted leaves with severe interveinal chlorosis and upward cup-shaped leaf margins."
+      treatment: "Eliminate vector reservoirs around fields; protect seedlings with fine insect mesh."
