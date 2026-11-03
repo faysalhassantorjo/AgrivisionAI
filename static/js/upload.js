@@ -297,6 +297,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        // 9. Update Print Timestamp
+        const printDateMeta = document.getElementById("printDateMeta");
+        if (printDateMeta) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            printDateMeta.textContent = `Generated: ${dateStr} ${timeStr} · Neural Diagnostic Verification`;
+        }
+
         // Display report pane
         if (resultCard) {
             resultCard.style.display = "flex";
@@ -311,6 +320,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (resultCard) resultCard.style.display = "none";
             if (loadingState) loadingState.style.display = "none";
             if (emptyState) emptyState.style.display = "flex";
+        });
+    }
+
+    // Print button handler
+    const btnPrintReport = document.getElementById("btnPrintReport");
+    if (btnPrintReport) {
+        btnPrintReport.addEventListener("click", () => {
+            window.print();
         });
     }
 

@@ -155,8 +155,13 @@
             <!-- Dark Top Diagnostic Banner -->
             <div class="report-banner">
                 <div class="banner-eyebrow">
-                    <span class="live-pulse-dot"></span>
-                    AI Pathology Diagnostic Report
+                    <div class="eyebrow-left">
+                        <span class="live-pulse-dot"></span>
+                        <span>AI Pathology Diagnostic Report</span>
+                    </div>
+                    <div class="banner-crop-badge" id="reportCropBadge">
+                        {{ plant_name }} {% if scientific_name %}· <em>{{ scientific_name }}</em>{% endif %}
+                    </div>
                 </div>
                 <div class="banner-title-row">
                     <div class="disease-title" id="resultDiseaseName">{{ result.class }}</div>
@@ -237,12 +242,22 @@
 
             </div>
 
+            <!-- Print-Only Watermark / Audit Footer -->
+            <div class="report-print-footer">
+                <div>
+                    🌿 <strong>AgriVision AI 2.0</strong> — Pathology Diagnosis & Treatment Studio
+                </div>
+                <div id="printDateMeta">
+                    Generated: {% now "Y-m-d H:i" %} · Neural Diagnostic Verification
+                </div>
+            </div>
+
             <!-- Report Action Footer -->
             <div class="report-footer-actions">
                 <button type="button" class="btn-reset-report" id="btnResetDiagnosis">
                     <i class="bi bi-arrow-repeat"></i> Diagnose Another Specimen
                 </button>
-                <button type="button" class="btn-print-report" onclick="window.print();">
+                <button type="button" class="btn-print-report" id="btnPrintReport" onclick="window.print();">
                     <i class="bi bi-printer"></i> Print Report
                 </button>
             </div>

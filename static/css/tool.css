@@ -459,7 +459,25 @@
     margin-bottom: .35rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 7px;
+}
+.eyebrow-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.banner-crop-badge {
+    font-family: var(--font-mono);
+    font-size: .66rem;
+    color: #a7f3d0;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 500;
+}
+.banner-crop-badge em {
+    font-style: italic;
+    opacity: .85;
 }
 .live-pulse-dot {
     width: 6px;
@@ -756,4 +774,296 @@
 .btn-print-report:hover {
     background: #f8faf8;
     color: var(--c-ink);
+}
+
+/* ── PRINT-ONLY WATERMARK & AUDIT FOOTER (Hidden on screen) ── */
+.report-print-footer {
+    display: none;
+}
+
+/* ============================================================
+   AgriVision AI 2.0 — Pathology Diagnostic Report Print Styles
+   Applies when user clicks 'Print Report' (window.print())
+   Isolates and renders exclusively the diagnosis report document
+   ============================================================ */
+@media print {
+    /* 1. Page Margins & Geometry */
+    @page {
+        size: auto;
+        margin: 12mm 15mm;
+    }
+
+    /* 2. Global Document Reset */
+    html, body {
+        height: auto !important;
+        min-height: 0 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    body > main {
+        display: block !important;
+        height: auto !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+    }
+
+    /* 3. Hide all non-report interface components */
+    .app-topbar,
+    aside,
+    .upload-pane,
+    aside.upload-pane,
+    .idle-hud,
+    .radar-loading,
+    .report-footer-actions,
+    .alert-error,
+    #clientError,
+    #serverError,
+    .tips-row,
+    .classes-section {
+        display: none !important;
+    }
+
+    /* 4. Reset studio layout containers to document flow */
+    .studio-window {
+        display: block !important;
+        grid-template-columns: none !important;
+        gap: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        overflow: visible !important;
+        border: none !important;
+    }
+
+    .monitor-pane {
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        overflow: visible !important;
+    }
+
+    /* 5. Diagnosis Report Container */
+    .diagnosis-report {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 12px !important;
+        background: #ffffff !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        page-break-inside: auto;
+        break-inside: auto;
+    }
+
+    /* 6. Dark Diagnostic Report Banner */
+    .report-banner {
+        background: #0f172a !important;
+        background: linear-gradient(135deg, #0f172a 0%, #052e16 100%) !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        padding: 1.15rem 1.4rem !important;
+        border-radius: 11px 11px 0 0 !important;
+        border-bottom: 2px solid #10b981 !important;
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    .banner-eyebrow {
+        color: #86efac !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .banner-crop-badge {
+        color: #a7f3d0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .disease-title {
+        color: #ffffff !important;
+        font-size: 1.6rem !important;
+    }
+
+    .live-pulse-dot {
+        box-shadow: none !important;
+        background: #22c55e !important;
+    }
+
+    /* 7. Report Scroll Body -> Document Flow */
+    .report-scroll-body {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        padding: 1.25rem 1.4rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1.15rem !important;
+    }
+
+    /* 8. Specimen & Metrics Row */
+    .specimen-metrics-grid {
+        display: grid !important;
+        grid-template-columns: 210px 1fr !important;
+        gap: 1.15rem !important;
+        align-items: stretch !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .specimen-box {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 10px !important;
+        max-height: 200px !important;
+        min-height: 170px !important;
+        overflow: hidden !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .specimen-img {
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 200px !important;
+        object-fit: cover !important;
+    }
+
+    .specimen-tag {
+        background: rgba(15, 23, 42, 0.9) !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .metric-summary-card {
+        background: #f8faf8 !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 10px !important;
+        padding: 1rem 1.15rem !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .conf-bar-track {
+        background: #e2e8e2 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .conf-bar-fill {
+        background: #10b981 !important;
+        background: linear-gradient(90deg, #10b981, #0f5132) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* 9. Agronomic Prescription Box */
+    .prescription-card {
+        background: #fffdf7 !important;
+        border: 1px solid #fde68a !important;
+        border-radius: 10px !important;
+        padding: 1rem 1.15rem !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .prescription-icon {
+        background: #fef3c7 !important;
+        color: #b45309 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* 10. Alternative Probabilities */
+    .alt-probabilities-card {
+        background: #ffffff !important;
+        border: 1px solid #d1d5db !important;
+        border-radius: 10px !important;
+        padding: 1rem 1.15rem !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .alt-prob-track {
+        background: #eef2ee !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .alt-prob-fill {
+        background: #0f5132 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* 11. Status Badges */
+    .badge-status {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    .badge-status.healthy {
+        background: #dcfce7 !important;
+        color: #15803d !important;
+        border: 1px solid #86efac !important;
+    }
+    .badge-status.diseased {
+        background: #fee2e2 !important;
+        color: #b91c1c !important;
+        border: 1px solid #fca5a5 !important;
+    }
+    .badge-status.aging {
+        background: #fef3c7 !important;
+        color: #b45309 !important;
+        border: 1px solid #fde68a !important;
+    }
+
+    /* 12. Print Watermark & Audit Footer */
+    .report-print-footer {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: .75rem 1.25rem !important;
+        border-top: 1px solid #e2e8e2 !important;
+        background: #f8faf8 !important;
+        font-size: .72rem !important;
+        color: #64748b !important;
+        font-family: var(--font-mono) !important;
+        border-radius: 0 0 11px 11px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        page-break-before: avoid;
+        break-before: avoid;
+    }
 }

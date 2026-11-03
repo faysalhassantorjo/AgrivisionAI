@@ -198,6 +198,12 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media print {
+            .app-topbar {
+                display: none !important;
+            }
+        }
     </style>
 
     {% block extra_head %}{% endblock %}
@@ -222,6 +228,7 @@
             <a href="/hibiscus/" class="crop-nav-item {% if plant_key == 'hibiscus' %}active{% endif %}">
                 <span>🌺</span> Hibiscus
             </a>
+            <!--
             <a href="/zucchini/" class="crop-nav-item {% if plant_key == 'zucchini' %}active{% endif %}">
                 <span>🍃</span> Zucchini
             </a>
@@ -231,6 +238,7 @@
             <a href="/papaya/" class="crop-nav-item beta-item {% if plant_key == 'papaya' %}active{% endif %}">
                 <span>🍈</span> Papaya
             </a>
+            -->
         </nav>
 
         <!-- Right System Indicators -->
