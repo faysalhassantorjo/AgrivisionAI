@@ -26,13 +26,8 @@ RUN pip install --upgrade pip
 # ---- Copy only requirements first (for Docker cache optimization) ----
 COPY requirements.txt .
 
-
-
 # ---- Install dependencies (layer cached) ----
 RUN pip install --no-cache-dir --timeout=1000 -r requirements.txt
-
-# install git lfs
-RUN apt-get update && apt-get install -y git-lfs && git lfs install
 
 # ---- Copy project after dependencies ----
 COPY . .
